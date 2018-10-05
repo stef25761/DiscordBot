@@ -1,6 +1,6 @@
-from DiscordBot.bot import DiscordBot
-from DiscordBot.utils import Utils
-from DiscordBot.validation import Validation
+from bot import DiscordBot
+from utils import Utils
+from validation import Validation
 
 
 validation= Validation()
