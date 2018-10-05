@@ -5,14 +5,16 @@ import discord
 from discord import Game
 from discord.ext import commands
 
-from utils import Utils
-from utils import Utils_Command
+from utils import Utils, UtilsGW2API, UtilsCommand
+from validation import Validation
 
 description =""
 askForAPIKey="Einfach den API Key mir schicken und " \
              "dann wirst du zugeorndet! Bitte warten :P"
-command_description = Utils_Command()
+command_description = UtilsCommand()
 utils = Utils()
+utils_gw2_api_key = UtilsGW2API()
+validation = Validation()
 class DiscordBot(commands.Bot):
     def __init__(self):
         super().__init__(command_prefix="!",description=description,pm_help=None)
@@ -57,13 +59,22 @@ class DiscordBot(commands.Bot):
     ## endregion
 
     ##region Bot commands
+    # TODO: initial gw2 api here
     @commands.command(description=command_description.REG,pass_context=True)
-
     async def reg(self,ctx):
         msg = askForAPIKey
         await self.send_message(ctx.message.author, msg)
         user_message = await self.wait_for_message(author=ctx.message.author)
-        print(user_message.content)
+
+        while not validation.validate_gw2_api_token(user_message.content):
+            await  self.send_message(ctx.message.author, utils.VALIDATE_GW2_API_KEY_ERROR_MESSAGE)
+            user_message = await  self.wait_for_message(author=ctx.message.author)
+
+        if validation.validate_gw2_api_token(user_message.content):
+            utils_gw2_api_key = user_message.content
+            ##gw2API = gw2ApiKe
+            await self.send_message(ctx.message.author, "Vielen dank, deine Anfrage wird bearbeitet")
+        print(utils_gw2_api_key)
 
 
 

@@ -7,7 +7,7 @@ validation= Validation()
 utils= Utils()
 userInput = input(utils.USER_TOKEN_QUESTION)
 
-while not validation.validateToken(userInput):
+while not validation.validate_token(userInput):
     print(utils.VALDIDATION_ERROR_MESSAGE)
     userInput = input(utils.USER_TOKEN_QUESTION)
 
