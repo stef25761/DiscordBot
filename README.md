@@ -28,4 +28,9 @@ python3 -m pip install -U discord.py
 ```
 pip install GuildWars2-API-Client
 ```
-
+## start Bot 
+on Linuxserver
+```
+cd BotDirectory
+python3 main.py
+```
