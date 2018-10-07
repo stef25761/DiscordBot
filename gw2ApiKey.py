@@ -1,35 +1,22 @@
-from gw2api import GuildWars2Client
 
-from utils import UtilsGW2API
-# test = GuildWars2Client(api_key="hierKönnteDeinTokenStehen")
-# print(dir(test))
-# acc = test.account.get()
-# print(acc)
-# print(acc.get("world"))
+from gw2api import GuildWars2Client
 from validation import Validation
+from utils import UtilsGW2API
+
+
 
 validation = Validation()
 utils = UtilsGW2API()
-# user_key = utils.USER_API_KEY
-user_key = ""
 
+linked_server_id = utils.LINKED_SERVER
 
 class GW2Api(GuildWars2Client):
-    def __init__(self):
-        self.api_key = user_key
-        self.verify_ssl = False
-        self.proxy = None
-        self.version = "2"
-        self.lang = "eng"
+    def __init__(self,user_key):
+        self.USER_KEY= user_key
+        super(GW2Api, self).__init__(api_key = user_key,verify_ssl = False,proxy = None,version = "v2",lang = "en",base_url="https://api.guildwars2.com/")
 
-    def getWorld(self):
-        print(dir(self))
-    # acc = self.account.get()
-    # if validation.checkServer(acc.get("world")):
-    #   print("Korrekt")
-    # else:
-    #   print("Nicht Korrekt")
+    def getUserHomeWorld(self):
+        return self.account.get().get("world")
 
 
-client = GW2Api()
-client.getWorld()
+

@@ -7,13 +7,13 @@ from discord.ext import commands
 
 from utils import Utils, UtilsGW2API, UtilsCommand
 from validation import Validation
-
+from gw2ApiKey import GW2Api
 description =""
 askForAPIKey="Einfach den API Key mir schicken und " \
              "dann wirst du zugeorndet! Bitte warten :P"
 command_description = UtilsCommand()
 utils = Utils()
-utils_gw2_api_key = UtilsGW2API()
+
 validation = Validation()
 class DiscordBot(commands.Bot):
     def __init__(self):
@@ -59,22 +59,21 @@ class DiscordBot(commands.Bot):
     ## endregion
 
     ##region Bot commands
-    # TODO: initial gw2 api here
+   #TODO: Add user to the correct serverrole
     @commands.command(description=command_description.REG,pass_context=True)
     async def reg(self,ctx):
         msg = askForAPIKey
         await self.send_message(ctx.message.author, msg)
         user_message = await self.wait_for_message(author=ctx.message.author)
 
-        while not validation.validate_gw2_api_token(user_message.content):
-            await  self.send_message(ctx.message.author, utils.VALIDATE_GW2_API_KEY_ERROR_MESSAGE)
-            user_message = await  self.wait_for_message(author=ctx.message.author)
+        try:
+            gw2API = GW2Api(user_message.content)
+            id = gw2API.getUserHomeWorld()
 
-        if validation.validate_gw2_api_token(user_message.content):
-            utils_gw2_api_key = user_message.content
-            ##gw2API = gw2ApiKe
-            await self.send_message(ctx.message.author, "Vielen dank, deine Anfrage wird bearbeitet")
-        print(utils_gw2_api_key)
+            await self.send_message(ctx.message.author, id)
+        except:
+            await self.send_message(ctx.message.author,"Bitte verwende noch einmal den Befehl !reg im DiscordChatChannel")
+
 
 
 
@@ -83,7 +82,11 @@ class DiscordBot(commands.Bot):
     async def be_rude(self,context):
         possible_brainfarts = ["Du Stinkst", "Geh dich Erhängen",
                                "Deine Mudda sammelt hässliche Kinder!",
-                               "Ich kann schneller Radfahren als du!"]
+                               "Ich kann schneller Radfahren als du!",
+                               "Dein Atem stinkt nach Pimmel", "Du Spermadose",
+                               "Du Eselarschfetischist","Du Hurrenküsser",
+                               "Du Ziegenwämser","Flischentischbesitzer!!"
+                               ]
         await self.say(random.choice(
             possible_brainfarts) + ", " + context.message.author.mention)
     ##endregion

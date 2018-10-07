@@ -8,7 +8,7 @@ class Utils():
     BOT_GAME_DESCRIPTION = "Warten auf Anweisungen, mein Meister"
     VALIDATE_GW2_API_KEY_ERROR_MESSAGE = "Kein richtiger GW2 API Key. Der Key sieht wie foglt aus: \n" \
                                          "ABCDE02B-8888-FEBA-1234-DE98765C7DEF"
-
+    VERIFY_KODASH =""
 
 class UtilsCommand():
     REG = "Der Befehl ist für die Autorisierung eines Servers." \
@@ -17,6 +17,7 @@ class UtilsCommand():
 
 
 class UtilsGW2API():
-    USER_API_KEY = ""
-    KODASH_ID = "2201"
+    USER_API_KEY =" "
+    HOME_SERVER_ID = 2201
     LINKED_SERVER = ""
+#todo: add config as json format
