@@ -5,21 +5,23 @@ import discord
 from discord import Game
 from discord.ext import commands
 
-from utils import Utils, UtilsGW2API, UtilsCommand
-from validation import Validation
 from gw2ApiKey import GW2Api
-description =""
-askForAPIKey="Einfach den API Key mir schicken und " \
-             "dann wirst du zugeorndet! Bitte warten :P"
-command_description = UtilsCommand()
+from utils import Utils, UtilsCommand, UtilsDiscordRoles
+from validation import Validation
+
 utils = Utils()
+description = utils.BOT_DESCRIPTION
+askForAPIKey = utils.API_QUESTION
+command_description = UtilsCommand()
+server_roles = UtilsDiscordRoles()
 
 validation = Validation()
 class DiscordBot(commands.Bot):
     def __init__(self):
-        super().__init__(command_prefix="!",description=description,pm_help=None)
+        super().__init__(command_prefix="!", description=description, pm_help=None, has_permission=8)
         self.add_command(self.be_rude)
         self.add_command(self.reg)
+
 
 
     ## region events
@@ -61,18 +63,31 @@ class DiscordBot(commands.Bot):
     ##region Bot commands
    #TODO: Add user to the correct serverrole
     @commands.command(description=command_description.REG,pass_context=True)
+    @commands.bot_has_permissions(administrator=True)
     async def reg(self,ctx):
         msg = askForAPIKey
         await self.send_message(ctx.message.author, msg)
         user_message = await self.wait_for_message(author=ctx.message.author)
+        user = ctx.message.author
+        home_roles = discord.utils.get(user.server.roles, name=server_roles.HOME_SERVER_ROLE)
+
 
         try:
             gw2API = GW2Api(user_message.content)
             id = gw2API.getUserHomeWorld()
 
-            await self.send_message(ctx.message.author, id)
+            if validation.checkServer(id):
+                print(user)
+                print(home_roles)
+
+                await self.add_roles(user, home_roles)
+                await self.send_message(ctx.message.author, "Danke. Wirst gerade hinzugefügt")
+            else:
+                await self.send_message(ctx.message.author, "Du bist leider nicht auf Kodash oder dem gelinktem Server")
         except:
-            await self.send_message(ctx.message.author,"Bitte verwende noch einmal den Befehl !reg im DiscordChatChannel")
+            await self.send_message(ctx.message.author,
+                                    "Bitte verwende noch einmal den Befehl !reg im DiscordChatChannel"
+                                    "Da ein Fehler aufgetaucht ist")
 
 
 

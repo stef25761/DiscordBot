@@ -1,23 +1,30 @@
+import configparser
 
+config = configparser.ConfigParser()
+config.read('configuration.ini')
+config_utils = config['Utils']
+config_commands = config['Commands_Description']
+config_GW2_Api = config['GW2API']
+config_server_roles = config['Discord_Server_Roles']
 class Utils():
-    BOT_DESCRIPTION = "Bitte gebe eine Beschreibung des Botes ein \n"
-    USER_TOKEN_QUESTION="Bitte gebe einen validen DiscordBotToken ein, danke \n"
-    VALDIDATION_ERROR_MESSAGE = "Kein valider Token. Der Token hat folgende Struktur: " \
-                                "xxxxxxxxxxxxxxxxxxxxxxxx.xxxxxx." \
-                                " xxxxxxxxxxxxxxxxxxxxxxxxxxx"
-    BOT_GAME_DESCRIPTION = "Warten auf Anweisungen, mein Meister"
-    VALIDATE_GW2_API_KEY_ERROR_MESSAGE = "Kein richtiger GW2 API Key. Der Key sieht wie foglt aus: \n" \
-                                         "ABCDE02B-8888-FEBA-1234-DE98765C7DEF"
-    VERIFY_KODASH =""
+    BOT_TOKEN = config_utils['BOT_TOKEN']
+    BOT_DESCRIPTION = config_utils['Bot_Description']
+    USER_TOKEN_QUESTION = config_utils['User_Token_Question']
+    VALDIDATION_ERROR_MESSAGE = config_utils['Validation_Error_Message']
+    BOT_GAME_DESCRIPTION = config_utils['Bot_Game_Description']
+    VALIDATE_GW2_API_KEY_ERROR_MESSAGE = config_utils['Validate_Key_Check_GW2_Error_Message']
+    API_QUESTION = config_utils['GW2_API_QUESTION']
 
 class UtilsCommand():
-    REG = "Der Befehl ist für die Autorisierung eines Servers." \
-          "Der Bot wird dich anschreiben, was zu machen ist"
-    BE_RUDE = "Rate mal was passiert du Pleb!!!"
+    REG = config_commands['REG']
+    BE_RUDE = config_commands['BE_RUDE']
 
 
 class UtilsGW2API():
-    USER_API_KEY =" "
-    HOME_SERVER_ID = 2201
-    LINKED_SERVER = ""
-#todo: add config as json format
+    HOME_SERVER_ID = int(config_GW2_Api['HOME_SERVER_ID'])
+    LINKED_SERVER = int(config_GW2_Api['LINKED_SERVER'])
+
+
+class UtilsDiscordRoles:
+    HOME_SERVER_ROLE = config_server_roles['HOME_SERVER_ROLE']
+    LINKED_SERVER_ROLE = config_server_roles['LINKED_SERVER_ROLE']
