@@ -6,7 +6,7 @@ from discord import Game
 from discord.ext import commands
 
 from gw2ApiKey import GW2Api
-from utils import Utils, UtilsCommand, UtilsDiscordRoles
+from utils import Utils, UtilsCommand, UtilsDiscordRoles, ErrorMessages
 from validation import Validation
 
 utils = Utils()
@@ -14,7 +14,7 @@ description = utils.BOT_DESCRIPTION
 askForAPIKey = utils.API_QUESTION
 command_description = UtilsCommand()
 server_roles = UtilsDiscordRoles()
-
+error_messages = ErrorMessages()
 validation = Validation()
 class DiscordBot(commands.Bot):
     def __init__(self):
@@ -37,25 +37,9 @@ class DiscordBot(commands.Bot):
 
     async def on_member_join(self,user):
         # TODO: bot commands or direct registration
-        try:
-            msg = askForAPIKey
-            user_message = await self.wait_for_message(author=user)
-            print(user_message.content)
-            await self.send_message(user, msg)
 
-        except:
-            print("on_member_join dont work")
-
-
-
-    async def on_member_remove(self,user):
-        #TODO: Server owener pm, that someone leaves, delete his role in db or delete total
-        try:
-            msg = "und Tschö"
-            await self.send_message(user, msg)
-
-        except:
-            print("on_member_remove dont work")
+        msg = utils.WELCOME_MSG
+        await self.send_message(user, msg)
 
 
     ## endregion
@@ -70,24 +54,34 @@ class DiscordBot(commands.Bot):
         user_message = await self.wait_for_message(author=ctx.message.author)
         user = ctx.message.author
         home_roles = discord.utils.get(user.server.roles, name=server_roles.HOME_SERVER_ROLE)
+        linked_roles = discord.utils.get(user.server.roles, name= server_roles.LINKED_SERVER_ROLE)
 
-
-        try:
-            gw2API = GW2Api(user_message.content)
-            id = gw2API.getUserHomeWorld()
-
-            if validation.checkServer(id):
-                print(user)
-                print(home_roles)
-
-                await self.add_roles(user, home_roles)
-                await self.send_message(ctx.message.author, "Danke. Wirst gerade hinzugefügt")
-            else:
-                await self.send_message(ctx.message.author, "Du bist leider nicht auf Kodash oder dem gelinktem Server")
-        except:
+        if (str(home_roles) in [y.name for y in ctx.message.author.roles]) or \
+                (str(linked_roles) in [y.name for y in ctx.message.author.roles]):
             await self.send_message(ctx.message.author,
-                                    "Bitte verwende noch einmal den Befehl !reg im DiscordChatChannel"
-                                    "Da ein Fehler aufgetaucht ist")
+                                    utils.ADD_USER_TO_ROLE_MSG)
+        else:
+
+            try:
+                gw2API = GW2Api(user_message.content)
+                id = gw2API.getUserHomeWorld()
+
+                if validation.checkHomeServer(id):
+
+                    await self.add_roles(user, home_roles)
+                    await self.send_message(ctx.message.author,
+                                            utils.IN_WORK)
+
+                elif(validation.checkLinkedServerRole(id)):
+                    await self.add_roles(user, linked_roles)
+                    await self.send_message(ctx.message.author,
+                                            utils.IN_WORK)
+                else:
+                    await self.send_message(ctx.message.author,
+                                           error_messages.USER_IS_IN_ROLE)
+            except:
+                await self.send_message(ctx.message.author,
+                                       error_messages.UPPS_THER_IS_WAS_WRONG)
 
 
 
