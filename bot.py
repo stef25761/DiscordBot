@@ -63,7 +63,6 @@ class DiscordBot(commands.Bot):
     ##region Bot commands
    #TODO: Add user to the correct serverrole
     @commands.command(description=command_description.REG,pass_context=True)
-    @commands.bot_has_permissions(administrator=True)
     async def reg(self,ctx):
         msg = askForAPIKey
         await self.send_message(ctx.message.author, msg)
