@@ -60,9 +60,9 @@ class DiscordBot(commands.Bot):
             await self.send_message(ctx.message.author,
                                     utils.ADD_USER_TO_ROLE_MSG)
         else:
-
             try:
                 gw2API = GW2Api(user_message.content)
+
                 id = gw2API.getUserHomeWorld()
 
                 if validation.checkHomeServer(id):
@@ -71,7 +71,8 @@ class DiscordBot(commands.Bot):
                     await self.send_message(ctx.message.author,
                                             utils.IN_WORK)
 
-                elif(validation.checkLinkedServerRole(id)):
+                elif (validation.checkLinkedServer(id)):
+
                     await self.add_roles(user, linked_roles)
                     await self.send_message(ctx.message.author,
                                             utils.IN_WORK)
