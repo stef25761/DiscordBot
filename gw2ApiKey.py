@@ -1,14 +1,10 @@
 
 from gw2api import GuildWars2Client
-from validation import Validation
 from utils import UtilsGW2API
 
 
 
-validation = Validation()
 utils = UtilsGW2API()
-
-linked_server_id = utils.LINKED_SERVER
 
 class GW2Api(GuildWars2Client):
     def __init__(self,user_key):
