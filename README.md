@@ -30,7 +30,7 @@ pip install GuildWars2-API-Client
 ```
 ## mongoDb
 before install Mongodb, make sure have purged all previous versions, or try to skip it and install the new version
-** steps to purge**
+**steps to purge**
 ```
 sudo apt-get purge mongo*
 sudo rm -R /var/lib/mongo
