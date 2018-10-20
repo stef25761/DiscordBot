@@ -49,6 +49,13 @@ you need
 sudo systemctl start mongod
 sudo systemctl enable mongod
 ```
+**Commands for db**
+```
+show dbs
+use DBNAME
+show collections
+db.COLLECTIONNAME.find()
+```
 ## start Bot 
 on Linuxserver
 ```
