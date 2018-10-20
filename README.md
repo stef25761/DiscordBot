@@ -28,6 +28,27 @@ python3 -m pip install -U discord.py
 ```
 pip install GuildWars2-API-Client
 ```
+## mongoDb
+before install Mongodb, make sure have purged all previous versions, or try to skip it and install the new version
+** steps to purge**
+```
+sudo apt-get purge mongo*
+sudo rm -R /var/lib/mongo
+```
+**try to "force install"**
+```
+sudo apt-get install -y mongodb-org
+```
+Start mongo in the shell
+```
+mongo
+```
+Now an error appears 
+you need
+```
+sudo systemctl start mongod
+sudo systemctl enable mongod
+```
 ## start Bot 
 on Linuxserver
 ```
