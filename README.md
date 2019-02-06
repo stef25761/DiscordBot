@@ -1,4 +1,8 @@
 # DiscordBot
+A DiscordBot for verify user, who current playing on a specific world in Guild Wars 2.
+Features is a mongodb, where the userdata, api key and user dicords id, get saved.
+In a personal intervall the bot check, if the user still playing on the server. Should he trans to another, the bot remove the server group and delete him in the db.
+In addition, the bot automatically gives the user a server group if it uses the particular command and sends the bot its Api Key in a private message.
 ## install python 3
 
 fist check wicht pythion is installed ( on linux)
