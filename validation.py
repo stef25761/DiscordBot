@@ -1,5 +1,7 @@
 import re
 
+import mongoDB
+from mongoDB import MongoDB
 from utils import UtilsGW2API, UtilsDiscordRoles
 
 utils = UtilsGW2API()
@@ -22,3 +24,6 @@ class Validation():
     def checkGW2APIKey(self, key):
         regex = "([A-Z,0-9]){8}-(([A-Z,0-9]){4}-){3}([A-Z,0-9]){20}-(([A-Z,0-9]){4}-){3}([A-Z,0-9]){12}"
         return re.match(regex, key) and len(key) == 72
+    def checkUserExist(self,discord_id):
+        return discord_id == MongoDB.getUser(discord_id)
+

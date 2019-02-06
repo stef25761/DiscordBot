@@ -17,6 +17,11 @@ class Utils():
     WELCOME_MSG =config_utils['WELCOME_MSG']
     ADD_USER_TO_ROLE_MSG = config_utils['ADD_USER_TO_ROLE_MSG']
     IN_WORK = config_utils['IN_WORK']
+    MONGO_HOST = config_utils['MONGO_HOST']
+    MONGO_PORT = config_utils['MONGO_PORT']
+    DB_NAME = config_utils['DB_NAME']
+    COLLECTION_NAME= config_utils['COL_NAME']
+    CHECK_INTERVALL = config_utils['CHECK_USER_HOMESERVER_INTERVALL']
 class UtilsCommand():
     REG = config_commands['REG']
     BE_RUDE = config_commands['BE_RUDE']
