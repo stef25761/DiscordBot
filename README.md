@@ -56,6 +56,10 @@ use DBNAME
 show collections
 db.COLLECTIONNAME.find()
 ```
+***MongoDb methods documentation***
+```
+https://docs.mongodb.com/manual/reference/method/js-collection/
+```
 ## start Bot 
 on Linuxserver
 ```
