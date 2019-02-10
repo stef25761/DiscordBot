@@ -1,13 +1,14 @@
 # Work with Python 3.6
-import random
 import asyncio
+import random
+
 import discord
-from discord import Game, user
+from discord import Game
 from discord.ext import commands
 
 import validation
-from mongoDB import MongoDB
 from gw2ApiKey import GW2Api
+from mongoDB import MongoDB
 from utils import Utils, UtilsCommand, UtilsDiscordRoles, ErrorMessages
 from validation import Validation
 
@@ -22,6 +23,7 @@ mongoDb = MongoDB()
 
 
 class DiscordBot(commands.Bot):
+    current_server_joined = None
 
     def __init__(self):
         super().__init__(command_prefix="!", description=description,
@@ -30,6 +32,15 @@ class DiscordBot(commands.Bot):
         self.add_command(self.reg)
 
     ## region events
+
+    async def on_server_join(self, server):
+        self.current_server_joined = server
+
+        print("---------------------------------")
+        print("join server: " + str(self.current_server_joined.name))
+        print("server id: " + str(self.current_server_joined.id))
+        print("---------------------------------")
+
     async def on_ready(self):
         await self.change_presence(game=Game(name=utils.BOT_GAME_DESCRIPTION))
 
@@ -45,7 +56,7 @@ class DiscordBot(commands.Bot):
 
     async def backgoundTask(self):
         await self.wait_until_ready()
-        server = None
+
         for item in self.servers:
             server= item
             print(item)
@@ -54,7 +65,7 @@ class DiscordBot(commands.Bot):
             print("collection size: "+ str(len(userList)))
             if userList:
                 counter = 0
-                print("current server: " + server.name)
+
                 for userObject in userList:
                     counter+=1
                     userID = userObject["id"]
@@ -67,7 +78,7 @@ class DiscordBot(commands.Bot):
                         print("--------------------")
                         print(str(counter))
                         print("--------------------")
-                        print("user: " + str(server.get_member(str(userID))))
+                        print("user: " + str(self.current_server_joined.get_member(str(userID))))
                         print("user id: " + str(userID))
                         print("user key: " + str(userKey))
                         print("--------------------")
@@ -76,8 +87,8 @@ class DiscordBot(commands.Bot):
 
                     else:
                         mongoDb.deleteUser(userID)
-                        print(server.get_member(str(userID)))
-                        user = server.get_member(str(userID))
+                        print(self.current_server_joined.get_member(str(userID)))
+                        user = self.current_server_joined.get_member(str(userID))
                         userRoleHomeServer = None
                         userRole = discord.utils.get(user.server.roles,
                                                      name=server_roles.HOME_SERVER_ROLE)
@@ -86,7 +97,7 @@ class DiscordBot(commands.Bot):
                         elif userRole.name == server_roles.LINKED_SERVER_ROLE:
                             userRoleHomeServer= userRole
 
-                        await self.remove_roles(server.get_member(str(userID)),
+                        await self.remove_roles(self.current_server_joined.get_member(str(userID)),
                                                 userRoleHomeServer)
 
             else:
