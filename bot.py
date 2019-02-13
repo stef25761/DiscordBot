@@ -161,9 +161,13 @@ class DiscordBot(commands.Bot):
                                          name=server_roles.LINKED_SERVER_ROLE)
 
         if ((str(home_roles) in [y.name for y in ctx.message.author.roles]) or \
-            (str(linked_roles) in [y.name for y in ctx.message.author.roles])) \
-                and (str(user_message.content) == str(user_api_key) and
-                     str(server_id) == str(server_of_membership)):
+                (str(linked_roles) in [y.name for y in
+                                       ctx.message.author.roles])):
+            await self.send_message(ctx.message.author,
+                                    utils.ADD_USER_TO_ROLE_MSG)
+
+        elif ((str(user_message.content) == str(user_api_key) and
+               str(server_id) == str(server_of_membership))):
             await self.send_message(ctx.message.author,
                                     utils.ADD_USER_TO_ROLE_MSG)
         else:
