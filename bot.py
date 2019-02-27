@@ -130,7 +130,7 @@ class DiscordBot(commands.Bot):
                                   "Please join him to a server")
                 else:
                     print("Db is empty")
-                await asyncio.sleep(int(utils.CHECK_INTERVALL))
+                ##await asyncio.sleep(int(utils.CHECK_INTERVALL))
 
 
 
