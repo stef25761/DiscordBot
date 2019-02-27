@@ -74,67 +74,65 @@ class DiscordBot(commands.Bot):
             # refactor all server with current_server_joined.
             # normally its works well
             counter = 0
-            try:
-                server_list = self.servers
-                for server in server_list:
-                    userList = mongoDb.getUserList(server.name)
-                    print("collection size: " + str(len(userList)))
-                    print("------------------------")
-                    counter += 1
-                    print("|server: " + str(counter))
-                    if userList:
 
-                        for userObject in userList:
+            server_list = self.servers
+            for server in server_list:
+                userList = mongoDb.getUserList(server.name)
+                print("collection size: " + str(len(userList)))
+                print("------------------------")
+                counter += 1
+                print("|server: " + str(counter))
+                if userList:
 
-                            userID = userObject["id"]
-                            userKey = userObject["api_key"]
-                            user_membership_server_id = userObject[
-                                "discord_server_id"]
-                            userWorld = GW2Api(userKey).getUserHomeWorld()
-                            if server is not None:
+                    for userObject in userList:
 
-                                if (validation.checkHomeServer(userWorld)) or \
-                                        (validation.checkLinkedServer(
-                                            userWorld)):
+                        userID = userObject["id"]
+                        userKey = userObject["api_key"]
+                        user_membership_server_id = userObject[
+                            "discord_server_id"]
+                        userWorld = GW2Api(userKey).getUserHomeWorld()
+                        if server is not None:
 
-                                    print("|-------------------")
-                                    print("|user: " + str(
-                                        server.get_member(str(userID))))
-                                    print("|user id: " + str(userID))
-                                    print("|user key: " + str(userKey))
-                                    print("|-------------------")
-                                    print("|guild wars 2 server id: " + str(
-                                        userWorld))
-                                    print("|discord server id: " + str(
-                                        user_membership_server_id))
-                                    print("|-------------------")
+                            if (validation.checkHomeServer(userWorld)) or \
+                                    (validation.checkLinkedServer(
+                                        userWorld)):
 
-                                else:
-                                    mongoDb.deleteUser(userID, server.name)
-                                    print(server.get_member(str(userID)))
-                                    user = server.get_member(str(userID))
-                                    userRoleHomeServer = None
-                                    userRole = discord.utils.get(
-                                        user.server.roles,
-                                        name=server_roles.HOME_SERVER_ROLE)
-                                    if userRole.name == server_roles.HOME_SERVER_ROLE:
-                                        userRoleHomeServer = userRole
-                                    elif userRole.name == server_roles.LINKED_SERVER_ROLE:
-                                        userRoleHomeServer = userRole
+                                print("|-------------------")
+                                print("|user: " + str(
+                                    server.get_member(str(userID))))
+                                print("|user id: " + str(userID))
+                                print("|user key: " + str(userKey))
+                                print("|-------------------")
+                                print("|guild wars 2 server id: " + str(
+                                    userWorld))
+                                print("|discord server id: " + str(
+                                    user_membership_server_id))
+                                print("|-------------------")
 
-                                    await self.remove_roles(
-                                        server.get_member(str(userID)),
-                                        userRoleHomeServer)
                             else:
-                                print("bot isn't on a server. "
-                                      "Please join him to a server")
-                    else:
-                        print("Db is empty")
-                    await asyncio.sleep(int(utils.CHECK_INTERVALL))
+                                mongoDb.deleteUser(userID, server.name)
+                                print(server.get_member(str(userID)))
+                                user = server.get_member(str(userID))
+                                userRoleHomeServer = None
+                                userRole = discord.utils.get(
+                                    user.server.roles,
+                                    name=server_roles.HOME_SERVER_ROLE)
+                                if userRole.name == server_roles.HOME_SERVER_ROLE:
+                                    userRoleHomeServer = userRole
+                                elif userRole.name == server_roles.LINKED_SERVER_ROLE:
+                                    userRoleHomeServer = userRole
 
-            except:
-                print(
-                    "Fehler ein Server wurde wohlmöglich entfernt oder unbekannter Fehler ")
+                                await self.remove_roles(
+                                    server.get_member(str(userID)),
+                                    userRoleHomeServer)
+                        else:
+                            print("bot isn't on a server. "
+                                  "Please join him to a server")
+                else:
+                    print("Db is empty")
+                await asyncio.sleep(int(utils.CHECK_INTERVALL))
+
+
 
             await asyncio.sleep(int(utils.CHECK_INTERVALL))
 
