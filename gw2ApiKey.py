@@ -1,4 +1,5 @@
 from gw2api import GuildWars2Client
+
 from utils import UtilsGW2API
 
 utils = UtilsGW2API()
@@ -13,3 +14,6 @@ class GW2Api(GuildWars2Client):
 
     def getUserHomeWorld(self):
         return self.account.get().get("world")
+
+    def get_account_name(self):
+        return self.account.get().get("name")

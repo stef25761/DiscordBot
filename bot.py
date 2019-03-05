@@ -90,24 +90,42 @@ class DiscordBot(commands.Bot):
                         userKey = userObject["api_key"]
                         user_membership_server_id = userObject[
                             "discord_server_id"]
-                        userWorld = GW2Api(userKey).getUserHomeWorld()
+                        userWorld = userObject["home_server"]
+                        user_acc_name = userObject["acc_name"]
                         if server is not None:
+                            user = server.get_member(str(userID))
+                            home_role = UtilsDiscordRoles.HOME_SERVER_ROLE
+                            linked_role = UtilsDiscordRoles.LINKED_SERVER_ROLE
 
-                            if (validation.checkHomeServer(userWorld)) or \
-                                    (validation.checkLinkedServer(
-                                        userWorld)):
+                            if (Validation.checkHomeServer(userWorld)):
 
-                                print("|-------------------")
-                                print("|user: " + str(
-                                    server.get_member(str(userID))))
-                                print("|user id: " + str(userID))
-                                print("|user key: " + str(userKey))
-                                print("|-------------------")
-                                print("|guild wars 2 server id: " + str(
-                                    userWorld))
-                                print("|discord server id: " + str(
-                                    user_membership_server_id))
-                                print("|-------------------")
+                                if not validation.user_in_role(user, home_role, linked_role):
+                                    await self.add_roles(user, home_role)
+                                else:
+                                    print("|-------------------")
+                                    print("|user: " + str(user))
+                                    print("|user id: " + str(userID))
+                                    print("|user key: " + str(userKey))
+                                    print("|-------------------")
+                                    print("|guild wars 2 server id: " + str(
+                                        userWorld))
+                                    print("|discord server id: " + str(
+                                        user_membership_server_id))
+                                    print("|-------------------")
+                            elif Validation.checkLinkedServer(userWorld):
+                                if not validation.user_in_role(user, home_role, linked_role):
+                                    await  self.add_roles(user, linked_role)
+                                else:
+                                    print("|-------------------")
+                                    print("|user: " + str(user))
+                                    print("|user id: " + str(userID))
+                                    print("|user key: " + str(userKey))
+                                    print("|-------------------")
+                                    print("|guild wars 2 server id: " + str(
+                                        userWorld))
+                                    print("|discord server id: " + str(
+                                        user_membership_server_id))
+                                    print("|-------------------")
 
                             else:
                                 mongoDb.deleteUser(userID, server.name)
@@ -158,9 +176,7 @@ class DiscordBot(commands.Bot):
         linked_roles = discord.utils.get(user.server.roles,
                                          name=server_roles.LINKED_SERVER_ROLE)
 
-        if ((str(home_roles) in [y.name for y in ctx.message.author.roles]) or \
-                (str(linked_roles) in [y.name for y in
-                                       ctx.message.author.roles])):
+        if (validation.user_in_role(ctx.message.author, home_roles, linked_roles)):
             await self.send_message(ctx.message.author,
                                     utils.ADD_USER_TO_ROLE_MSG)
 
@@ -173,7 +189,7 @@ class DiscordBot(commands.Bot):
                 gw2API = GW2Api(user_message.content)
 
                 id = gw2API.getUserHomeWorld()
-
+                __name = gw2API.get_account_name()
                 if validation.checkHomeServer(id):
 
                     await self.add_roles(user, home_roles)
@@ -181,7 +197,9 @@ class DiscordBot(commands.Bot):
                                             utils.IN_WORK)
                     __userDic = {
                         "id": user.id,
+                        "acc_name": __name,
                         "api_key": user_message.content,
+                        "home_server": id,
                         "discord_server_id": user.server.id
                     }
 
@@ -194,7 +212,9 @@ class DiscordBot(commands.Bot):
                                             utils.IN_WORK)
                     __userDic = {
                         "id": user.id,
+                        "acc_name": __name,
                         "api_key": user_message.content,
+                        "home_server": id,
                         "discord_server_id": user.server.id
                     }
 

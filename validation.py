@@ -1,6 +1,5 @@
 import re
 
-import mongoDB
 from mongoDB import MongoDB
 from utils import UtilsGW2API, UtilsDiscordRoles
 
@@ -26,3 +25,7 @@ class Validation():
 
     def checkUserExist(self, discord_id):
         return discord_id == MongoDB.getUser(discord_id)
+
+    def user_in_role(self, user, home_role, linked_role):
+        return (str(home_role) in [y.name for y in user.roles]) or \
+               (str(linked_role) in [y.name for y in user.roles])
