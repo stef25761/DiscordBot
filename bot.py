@@ -90,8 +90,14 @@ class DiscordBot(commands.Bot):
                         userKey = userObject["api_key"]
                         user_membership_server_id = userObject[
                             "discord_server_id"]
-                        userWorld = userObject["home_server"]
-                        user_acc_name = userObject["acc_name"]
+
+                        if not userObject["home_server"]:
+                            userWorld = GW2Api(userKey).getUserHomeWorld()
+
+                        else:
+                            userWorld = userObject["home_server"]
+
+
                         if server is not None:
                             user = server.get_member(str(userID))
                             home_role = UtilsDiscordRoles.HOME_SERVER_ROLE
