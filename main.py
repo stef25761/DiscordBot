@@ -15,5 +15,5 @@ while not validation.validate_token(bot_token):
 
 bot= DiscordBot()
 
-bot.loop.create_task(bot.backgoundTask())
+##bot.loop.create_task(bot.backgoundTask())
 bot.run(bot_token)

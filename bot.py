@@ -34,7 +34,7 @@ class DiscordBot(commands.Bot):
         self.add_command(self.reg)
 
     # region events
-    async def on_guild_join(self, server):
+    async def on_server_join(self, server):
         print("create server collection")
         mongoDb.create_collection(server.name)
         print("---------------------------------")
@@ -43,7 +43,7 @@ class DiscordBot(commands.Bot):
         print("---------------------------------")
 
     async def on_ready(self):
-        await self.change_presence(status=discord.Status.online, activity=discord.Game(name=utils.BOT_GAME_DESCRIPTION))
+        await self.change_presence(game=Game(name=utils.BOT_GAME_DESCRIPTION))
 
         print('Logged in as')
         print(self.user.name)
@@ -93,7 +93,6 @@ class DiscordBot(commands.Bot):
                             "discord_server_id"]
                         userWorld = int(userObject["home_server"])
 
-
                         if server is not None:
                             user = server.get_member(str(userID))
                             home_role = UtilsDiscordRoles.HOME_SERVER_ROLE
@@ -101,7 +100,8 @@ class DiscordBot(commands.Bot):
 
                             if (validation.checkHomeServer(userWorld)):
 
-                                if not validation.user_in_role(user, home_role, linked_role):
+                                if not validation.user_in_role(user, home_role,
+                                                               linked_role):
                                     await self.add_roles(user, home_role)
                                 else:
                                     print("|-------------------")
@@ -115,7 +115,8 @@ class DiscordBot(commands.Bot):
                                         user_membership_server_id))
                                     print("|-------------------")
                             elif validation.checkLinkedServer(userWorld):
-                                if not validation.user_in_role(user, home_role, linked_role):
+                                if not validation.user_in_role(user, home_role,
+                                                               linked_role):
                                     await  self.add_roles(user, linked_role)
                                 else:
                                     print("|-------------------")
@@ -152,23 +153,16 @@ class DiscordBot(commands.Bot):
                     print("Db is empty")
                 ##await asyncio.sleep(int(utils.CHECK_INTERVALL))
 
-
-
             await asyncio.sleep(int(utils.CHECK_INTERVALL))
 
     ## endregion
 
     ##region Bot commands
-    @commands.command(description="only for admin,biatch", pass_context=True)
-    @commands.is_owner()
-    async  def add_user(self):
-        print("owner use")
 
-    @commands.command(description=command_description.REG)
-    async def reg(self,ctx):
-
+    @commands.command(description=command_description.REG, pass_context=True)
+    async def reg(self, ctx):
         msg = askForAPIKey
-        await self.ctx.author.send(msg)
+        await self.send_message(ctx.message.author, msg)
 
         user_message = await self.wait_for_message(author=ctx.message.author)
         user = ctx.message.author
@@ -183,7 +177,9 @@ class DiscordBot(commands.Bot):
         linked_roles = discord.utils.get(user.server.roles,
                                          name=server_roles.LINKED_SERVER_ROLE)
 
-        if (validation.user_in_role(ctx.message.author, home_roles, linked_roles)):
+        if (
+                validation.user_in_role(ctx.message.author, home_roles,
+                                        linked_roles)):
             await self.send_message(ctx.message.author,
                                     utils.ADD_USER_TO_ROLE_MSG)
 
