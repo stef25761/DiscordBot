@@ -14,6 +14,7 @@ class Validation():
                token[24] == "." and token[31] == "."
 
     def checkHomeServer(self, world_id):
+
         return world_id == utils.HOME_SERVER_ID
 
     def checkLinkedServer(self, world_id):
