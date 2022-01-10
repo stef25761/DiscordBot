@@ -232,12 +232,7 @@ class DiscordBot(commands.Bot):
     @commands.command(description=command_description.BE_RUDE,
                       pass_context=True)
     async def be_rude(self, context):
-        possible_brainfarts = ["Du Stinkst", "Geh dich Erhängen",
-                               "Deine Mudda sammelt hässliche Kinder!",
-                               "Ich kann schneller Radfahren als du!",
-                               "Dein Atem stinkt nach Pimmel", "Du Spermadose",
-                               "Du Eselarschfetischist", "Du Hurrenküsser",
-                               "Du Ziegenwämser", "Flischentischbesitzer!!"
+        possible_brainfarts = [""
                                ]
         await self.say(random.choice(
             possible_brainfarts) + ", " + context.message.author.mention)
